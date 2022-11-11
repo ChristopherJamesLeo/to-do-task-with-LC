@@ -26,6 +26,8 @@ body{
 }
 .container .date-and-time span{
     padding: 0px 30px;
+    display: block;
+    width: 200px;
 }
 .enter-task {
     line-height: 2;
@@ -117,8 +119,14 @@ body{
         transform: scale(0.8);
     }
 }
-@media (max-width:400px){
+@media (max-width:600px){
     .container{
         transform: scale(0.7);
+    }
+    .container .date-and-time{
+        flex-direction: column;
+    }
+    .container .date-and-time span{
+        margin: 10px 0px;
     }
 }
