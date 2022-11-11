@@ -112,3 +112,13 @@ body{
     padding: 10px;
     cursor: pointer;
 }
+@media (max-width:800px){
+    .container{
+        transform: scale(0.8);
+    }
+}
+@media (max-width:400px){
+    .container{
+        transform: scale(0.7);
+    }
+}
