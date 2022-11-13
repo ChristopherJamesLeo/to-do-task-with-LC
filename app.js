@@ -11,37 +11,79 @@ let getform = document.querySelector("#form-group"),
     confirmBtn = document.querySelector("#confirm"),
     introPage = document.querySelector(".introContainer"),
     mainPage = document.querySelector(".container"),
-    listTitle = document.querySelector("h3");
+    listTitle = document.querySelector("h3"),
+    titleList = document.querySelector(".title-list-group");
 
-if(localStorage.getItem("listData")=== null){
-    introPage.style.display = "block";
-    mainPage.style.display= "none";
+
+
+
+
+function allLiItems(inputTitleText,ulTag){
+    let titlesLiTag = document.createElement("li");
+    titlesLiTag.classList.add("title-list-group-items");
+    titlesLiTag.innerText = inputTitleText;
+    ulTag.appendChild(titlesLiTag)
+
+}
+
+function storeTitle(inputTitle ,inputTitleText){
+    let alltitles;
+    if(localStorage.getItem(inputTitle) === null){
+        alltitles = [];
+    }else {
+        alltitles = JSON.parse(localStorage.getItem(inputTitle));
+    }
+    alltitles.push(inputTitleText);
+    localStorage.setItem(inputTitle,JSON.stringify(alltitles));
+    alltitles = JSON.parse(localStorage.getItem(inputTitle))
+    return alltitles;
+}
+
+
+
+
+
+
+// var getTitles ;
     titleForm.addEventListener("submit",function(e){
         e.preventDefault();
-        let getTitle = inputtitle.value;
-        localStorage.setItem("title",getTitle)
-        if(getTitle.length === 0){
-            alert("Type Your Title");
+        if(inputtitle.value === null){
+            console.log("nul")
+        }
+        // console.log(inputtitle.value);
+        let titleValue = inputtitle.value
+        
+        if(titleValue !== ""){
+            allLiItems(titleValue,titleList);
+            inputtitle.value = "";
         }else{
-            formTitle.innerText = getTitle;
-            introPage.style.display = `none`;
-            mainPage.style.display= "block";
-            let uppCase = getTitle.toUpperCase();
-            // console.log(uppCase)
-            if(uppCase.includes(" LIST")){
-                listTitle.innerText = `${getTitle}`;
-            }else {
-                listTitle.innerText = `${getTitle} List`;
-            }
+           console.log("enter your title")
+        }
+        let titleListArr = Array.from(titleList.children)
+        titleListArr.forEach(function(titleArr){
+            titleArr.addEventListener("click",function(){
+            })
+        })    
+    })
+
+
+
+
+// let getTitle = inputtitle.value;
+
+if(allTitles !== null){
+    allTitles.forEach(function(allTitle){
+        allLiItems(allTitle,titleList)
+    })
+    
+    titleList.addEventListener("click",function(e){
+        let alltitle = e.target;
+        if(alltitle.classList.contains("title-list-group-items")){
+            console.log("list bth")
         }
     })
-}else {
-    let getTitle = inputtitle.value;
-    introPage.style.display = `none`;
-    mainPage.style.display= "block";
-    formTitle.innerText = localStorage.getItem("title");
-    listTitle.innerText = `${localStorage.getItem("title")} List`;
 }
+
 
 
 
@@ -72,80 +114,6 @@ function time(){
     shortdate.innerText = `${getDates}.${getMonth+1}.${getYear}`;
     longdate.innerText =`${days[getDay]} / ${months[getMonth]} / ${getYear}`;
 }
-
 time();
 let timeinterval =  setInterval(time, 1000);
-
-
-getform.addEventListener("submit",function(e){
-    e.preventDefault();
-    task = getInput.value.trim();
-    if (task.length === 0) {
-        alert("Enter Your Daily Task")
-
-    }else{
-        let litag = document.createElement("li");
-        litag.classList.add("list-group-items");
-        getlistContainer.appendChild(litag);
-        let getDate = new Date, getDates = getDate.getDate(), getMonth = getDate.getMonth(),getYear = getDate.getUTCFullYear();
-        litag.innerHTML =`<span>${task}</span><span>${getDates}.${getMonth+1}.${getYear}</span> <a href="#" id="delete-btn"><ion-icon name="trash-outline"  class="delete-btn"></ion-icon></a>`
-        getlistContainer.appendChild(litag);
-        getInput.value = "";
-        var listArr ;
-        if(localStorage.getItem("listData")=== null){
-            listArr= [];
-        } else {
-            listArr = JSON.parse(localStorage.getItem("listData"));
-        }
-        listArr.push(task);
-        localStorage.setItem("listData",JSON.stringify(listArr));
-    }
-})
-
-// delete list
-getlistContainer.addEventListener("click",function(e){
-    let target = e.target;
-    console.log(target)
-    if(target.classList.contains("delete-btn")){
-        let targetParent = target.parentElement.parentElement;
-        targetParent.remove();
-    }
-
-})
-
-
-// Show Storage data
-let getData = JSON.parse(localStorage.getItem("listData"));
-
-if (getData === null) {
-    // alert("Input Your Daily Tast")
-    getInput.focus();
-}else{
-    getData.forEach(function(lists){
-        let getDate = new Date, getDates = getDate.getDate(), getMonth = getDate.getMonth(),getYear = getDate.getUTCFullYear();
-        let litag = document.createElement("li");
-        litag.classList.add("list-group-items");
-        getlistContainer.appendChild(litag);
-        litag.innerHTML =`<span>${lists}</span><span>${getDates}.${getMonth+1}.${getYear}</span> <a href="#" id="delete-btn"><ion-icon name="trash-outline"  class="delete-btn"></ion-icon></a>`
-        getlistContainer.appendChild(litag);
-    });
-}
-
-// Clear All Data
-
-getClearAllBtn.addEventListener("click",function(){
-    alert("You push the clear all button that will be delete all memories")
-    let getlistsArr =Array.from(getlistContainer.children) ;
-
-    for(let i = 0 ; i < getlistsArr.length ; i++){
-        getlistsArr[i].remove();
-    }
-
-    if(localStorage.getItem("listData") === null){
-        return;
-    }else {
-        localStorage.removeItem("listData");
-    }
-})
-
 
