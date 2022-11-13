@@ -18,15 +18,15 @@ let getform = document.querySelector("#form-group"),
 
 
 
-function allLiItems(inputTitleText,ulTag){
+function allLiItems(inputTitleText,ulTag,cla){
     let titlesLiTag = document.createElement("li");
-    titlesLiTag.classList.add("title-list-group-items");
+    titlesLiTag.classList.add(cla);
     titlesLiTag.innerText = inputTitleText;
     ulTag.appendChild(titlesLiTag)
 
 }
 
-function storeTitle(inputTitle ,inputTitleText){
+function storeTitleValues(inputTitle ,inputTitleText){
     let alltitles;
     if(localStorage.getItem(inputTitle) === null){
         alltitles = [];
@@ -35,10 +35,28 @@ function storeTitle(inputTitle ,inputTitleText){
     }
     alltitles.push(inputTitleText);
     localStorage.setItem(inputTitle,JSON.stringify(alltitles));
-    alltitles = JSON.parse(localStorage.getItem(inputTitle))
-    return alltitles;
+    let getStorage = JSON.parse(localStorage.getItem(inputTitle))
+    return getStorage;
 }
-
+function storeTitle(titleInput){
+    if(titleInput !== ""){
+        // console.log("not null")
+        let titles;
+        if(localStorage.getItem("titles") === null){
+            titles = [];
+        }else {
+            titles = JSON.parse(localStorage.getItem("titles"));
+        }
+        titles.push(titleInput);
+        localStorage.setItem("titles",JSON.stringify(titles));
+        let titlesList = JSON.parse(localStorage.getItem("titles"));
+        // console.log(titleList)
+        return titlesList;
+    }else{
+        console.log("title is null")
+    }
+    
+}
 
 
 
@@ -47,42 +65,72 @@ function storeTitle(inputTitle ,inputTitleText){
 // var getTitles ;
     titleForm.addEventListener("submit",function(e){
         e.preventDefault();
-        if(inputtitle.value === null){
-            console.log("nul")
-        }
-        // console.log(inputtitle.value);
         let titleValue = inputtitle.value
         
         if(titleValue !== ""){
-            allLiItems(titleValue,titleList);
+            allLiItems(titleValue,titleList,"title-list-group-items");
+            storeTitle(titleValue);
+            storeTitleValues(titleValue,titleValue)
             inputtitle.value = "";
         }else{
-           console.log("enter your title")
+           alert("Enter Your Task")
+           inputtitle.focus()
         }
         let titleListArr = Array.from(titleList.children)
         titleListArr.forEach(function(titleArr){
             titleArr.addEventListener("click",function(){
+                console.log(this.innerText)
             })
         })    
     })
 
+let getTitle = inputtitle.value;
 
 
 
-// let getTitle = inputtitle.value;
-
-if(allTitles !== null){
-    allTitles.forEach(function(allTitle){
-        allLiItems(allTitle,titleList)
-    })
-    
-    titleList.addEventListener("click",function(e){
-        let alltitle = e.target;
-        if(alltitle.classList.contains("title-list-group-items")){
-            console.log("list bth")
-        }
+let getTitleDatas = JSON.parse(localStorage.getItem("titles"));
+// console.log(getTitleDatas)
+if(localStorage.getItem("titles") !== null){
+    getTitleDatas.forEach(function(getTitleData){
+        allLiItems(getTitleData,titleList,"title-list-group-items");
+        let titleListArr = Array.from(titleList.children)
+        titleListArr.forEach(function(titleArr){
+            titleArr.addEventListener("click",function(){
+                console.log(this.innerText)
+            })
+        }) 
     })
 }
+
+
+
+
+titleList.addEventListener("click",function(e){
+    let liTag = e.target;
+    if(liTag.classList.contains("title-list-group-items")){
+        let liTagLists = JSON.parse(localStorage.getItem(liTag.textContent))
+        liTagLists.forEach(function(liTagList){
+            // allLiItems(liTagList,getlistContainer,"list-group-items");
+            formTitle.textContent = liTagList.toUpperCase();
+            if(formTitle.textContent.includes("LIST")){
+                listTitle.innerText = formTitle.textContent;
+            }else{
+                listTitle.innerText = formTitle.textContent + " List";
+            }
+        })
+    }
+})
+getSubmitBtn.addEventListener("click",function(e){
+    e.preventDefault();
+    let getKey = formTitle.innerText;
+    let getInputValue = getInput.value;
+    allLiItems(getInputValue,getlistContainer,"list-group-items");
+    storeTitleValues(getKey,getInputValue);
+    
+})
+
+
+
 
 
 

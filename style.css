@@ -12,7 +12,7 @@ body{
     padding: 50px;
     background-color: #f4f4f4;
     text-align: center;
-    display: none;
+    /* display: none; */
 }
 .container h1{
     line-height: 1;
