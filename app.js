@@ -4,7 +4,7 @@ let getform = document.querySelector("#form-group"),
     getSubmitBtn = document.querySelector("#submit-btn"),
     getlistContainer = document.querySelector("#list-group"),
     getClearAllBtn = document.querySelector("#clear-all-btn"),
-
+    getMainContainer = document.querySelector(".container")
     formTitle = document.querySelector(".form-title"),
     inputtitle = document.querySelector("#title"),
     titleForm = document.querySelector("#mytitle"),
@@ -12,17 +12,21 @@ let getform = document.querySelector("#form-group"),
     introPage = document.querySelector(".introContainer"),
     mainPage = document.querySelector(".container"),
     listTitle = document.querySelector("h3"),
-    titleList = document.querySelector(".title-list-group");
+    titleList = document.querySelector(".title-list-group"),
+    getClearallTitleBtn = document.querySelector("#clear-all-title"),
+    getShowAllTitle = document.querySelector("#showAllTitle");
 
 
 
 
 
-function allLiItems(inputTitleText,ulTag,cla){
+function allLiItems(inputTitleText,ulTag,cla,delCla){
+    
     let titlesLiTag = document.createElement("li");
     titlesLiTag.classList.add(cla);
-    titlesLiTag.innerText = inputTitleText;
+    titlesLiTag.innerHTML = `<span>${inputTitleText}</span><a href="#" ><ion-icon name="trash-outline" class=${delCla} ></ion-icon></a>`;
     ulTag.appendChild(titlesLiTag)
+
 
 }
 
@@ -68,7 +72,7 @@ function storeTitle(titleInput){
         let titleValue = inputtitle.value
         
         if(titleValue !== ""){
-            allLiItems(titleValue,titleList,"title-list-group-items");
+            allLiItems(titleValue,titleList,"title-list-group-items","deleList");
             storeTitle(titleValue);
             storeTitleValues(titleValue,titleValue)
             inputtitle.value = "";
@@ -89,34 +93,39 @@ let getTitle = inputtitle.value;
 
 
 let getTitleDatas = JSON.parse(localStorage.getItem("titles"));
-// console.log(getTitleDatas)
+
 if(localStorage.getItem("titles") !== null){
     getTitleDatas.forEach(function(getTitleData){
-        allLiItems(getTitleData,titleList,"title-list-group-items");
-        let titleListArr = Array.from(titleList.children)
-        titleListArr.forEach(function(titleArr){
-            titleArr.addEventListener("click",function(){
-                console.log(this.innerText)
-            })
-        }) 
+        allLiItems(getTitleData,titleList,"title-list-group-items","deleList");
     })
 }
-
 
 
 
 titleList.addEventListener("click",function(e){
     let liTag = e.target;
     if(liTag.classList.contains("title-list-group-items")){
+        getMainContainer.style.display = "block";
+        introPage.style.display = "none";
+        getlistContainer.style.display = "block";
         let liTagLists = JSON.parse(localStorage.getItem(liTag.textContent))
         liTagLists.forEach(function(liTagList){
-            // allLiItems(liTagList,getlistContainer,"list-group-items");
-            formTitle.textContent = liTagList.toUpperCase();
-            if(formTitle.textContent.includes("LIST")){
-                listTitle.innerText = formTitle.textContent;
-            }else{
-                listTitle.innerText = formTitle.textContent + " List";
+            let getEachLists = JSON.parse(localStorage.getItem(liTagList));
+            if(localStorage.getItem(liTagList) !== null){
+                console.log(JSON.parse(localStorage.getItem(liTagList)))
+                getEachLists.forEach(function(getEachList){
+                    
+                    allLiItems(getEachList,getlistContainer,"list-group-items","deleClearList");
+                })
+                formTitle.textContent = getEachLists[0];
+                if(liTagList.includes("list")||liTagList.includes("List") ||formTitle.textContent.includes("list") ){
+                    listTitle.innerText = formTitle.textContent;
+                }else{
+                    listTitle.innerText = formTitle.textContent+ " List";
+                }
             }
+
+
         })
     }
 })
@@ -124,16 +133,65 @@ getSubmitBtn.addEventListener("click",function(e){
     e.preventDefault();
     let getKey = formTitle.innerText;
     let getInputValue = getInput.value;
-    allLiItems(getInputValue,getlistContainer,"list-group-items");
-    storeTitleValues(getKey,getInputValue);
+    if(getInputValue !== ""){
+        allLiItems(getInputValue,getlistContainer,"list-group-items","deleClearList");
+        storeTitleValues(getKey,getInputValue);
+    }else{
+        alert("enter your list")
+        getInput.focus();
+    }
+    getInput.value = "";
+    getInput.focus();
     
 })
 
 
+getlistContainer.addEventListener("click",function(e){
+    let btnTar = e.target;
+    if(btnTar.classList.contains("deleClearList")){
+        let delLis = btnTar.parentElement.parentElement;
+        delLis.remove();
+    }
+})
+
+getClearAllBtn.addEventListener("click",function(e){
+    alert(`Are You Sure Delete Your ${formTitle.innerText}`)
+    let getformTitle = formTitle.innerText;
+    let getData = JSON.parse(localStorage.getItem(getformTitle));
+    // console.log(getData)
+    getData=[getformTitle];
+    localStorage.setItem(getformTitle,JSON.stringify(getData));
+    let allList = Array.from(getlistContainer.children);
+    console.log(allList)
+    for(let i = 0 ; i < allList.length ; i++){
+        let toDeleList = allList[i];
+        toDeleList.remove();
+    }
 
 
+})
 
+getClearallTitleBtn.addEventListener("click",function(){
+    alert(`Are Your Sure Clear Your All Data`)
+    let alltitle = Array.from(titleList.children);
+    for (let i = 0; i < alltitle.length; i++) {
+        let titles = alltitle[i];
+        titles.remove();
+        
+    }
+    localStorage.clear();
+})
 
+getShowAllTitle.addEventListener("click",function(){
+    let clearMainLists = Array.from(this.previousElementSibling.previousElementSibling.children);
+    for(let i = 0; i < clearMainLists.length ; i++){
+        clearMainLists[i].remove();
+    }
+    
+
+    
+    window.location.reload();
+})
 
 // Date and Time 
 let days = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"]
