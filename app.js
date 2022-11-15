@@ -70,7 +70,7 @@ function storeTitle(titleInput){
     titleForm.addEventListener("submit",function(e){
         e.preventDefault();
         let titleValue = inputtitle.value
-        
+        getClearallTitleBtn.style.display = "block";
         if(titleValue !== ""){
             allLiItems(titleValue,titleList,"title-list-group-items","deleList");
             storeTitle(titleValue);
@@ -95,6 +95,7 @@ let getTitle = inputtitle.value;
 let getTitleDatas = JSON.parse(localStorage.getItem("titles"));
 
 if(localStorage.getItem("titles") !== null){
+    getClearallTitleBtn.style.display = "block";
     getTitleDatas.forEach(function(getTitleData){
         allLiItems(getTitleData,titleList,"title-list-group-items","deleList");
     })
@@ -112,9 +113,9 @@ titleList.addEventListener("click",function(e){
         liTagLists.forEach(function(liTagList){
             let getEachLists = JSON.parse(localStorage.getItem(liTagList));
             if(localStorage.getItem(liTagList) !== null){
+                getClearAllBtn.style.display = "block";
                 console.log(JSON.parse(localStorage.getItem(liTagList)))
-                getEachLists.forEach(function(getEachList){
-                    
+                getEachLists.forEach(function(getEachList){     
                     allLiItems(getEachList,getlistContainer,"list-group-items","deleClearList");
                 })
                 formTitle.textContent = getEachLists[0];
@@ -124,8 +125,6 @@ titleList.addEventListener("click",function(e){
                     listTitle.innerText = formTitle.textContent+ " List";
                 }
             }
-
-
         })
     }
 })
@@ -140,6 +139,7 @@ getSubmitBtn.addEventListener("click",function(e){
         alert("enter your list")
         getInput.focus();
     }
+    getClearAllBtn.style.display = "block";
     getInput.value = "";
     getInput.focus();
     
@@ -167,12 +167,13 @@ getClearAllBtn.addEventListener("click",function(e){
         let toDeleList = allList[i];
         toDeleList.remove();
     }
-
+    getClearAllBtn.style.display = "none";
 
 })
 
 getClearallTitleBtn.addEventListener("click",function(){
     alert(`Are Your Sure Clear Your All Data`)
+    getClearallTitleBtn.style.display = "none";
     let alltitle = Array.from(titleList.children);
     for (let i = 0; i < alltitle.length; i++) {
         let titles = alltitle[i];
